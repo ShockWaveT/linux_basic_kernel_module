@@ -1,0 +1,30 @@
+cross compiling for kernel module
+---------------------------------
+1. download the correct tool chain(NOT aarch64-...)
+
+2. download the exact linux version source from git
+	use the boards git repository. not linux github mirror. 
+
+3. build the linux source to generate headers:
+	use .config of the exact linux version and architecture/board.
+	can be exported from running linux system or copied from
+	respective boards kernel source files(eg. kernel/configs/beaglebone, or
+	arch/arm/configs).
+	copy this .config file to the root source files directory
+	
+	make ARCH=arm CROSS_COMPILE=path/to/compiler/arm-none-eabi- -j8
+	(don't need to wait for the whole compilation to finish. we only need headers)
+	
+	or
+	
+	use directly use defconfigs to generate the .config file:
+	eg: make ARCH=arm CROSS_COMPILE=path/to/comipler/arm-none-eabi- ti_sdk_am3x_release_defconfig
+	then 
+	make ARCH=arm CROSS_COMPILE=path/to/comipler/arm-none-eabi- -j8
+	
+4. now kernel headers are genereted for the target board in the linux source directory.
+	add this directory path to makefile of kernel module we are going to build.
+	
+5. cd into kernel module directory. make all
+
+
