@@ -7,18 +7,13 @@ cross compiling for kernel module
 
 3. build the linux source to generate headers:
 	use .config of the exact linux version and architecture/board.
-	can be exported from running linux system or copied from
+	can be exported from running linux system(/proc/config.gz) or copied from
 	respective boards kernel source files(eg. kernel/configs/beaglebone, or
 	arch/arm/configs).
-	copy this .config file to the root source files directory
+	copy this .config file to "arch/arm/configs". then rename it to some "xxx_defconfig"
 	
-	make ARCH=arm CROSS_COMPILE=path/to/compiler/arm-none-eabi- -j8
-	(don't need to wait for the whole compilation to finish. we only need headers)
-	
-	or
-	
-	use directly use defconfigs to generate the .config file:
-	eg: make ARCH=arm CROSS_COMPILE=path/to/comipler/arm-none-eabi- ti_sdk_am3x_release_defconfig
+	directly use defconfigs to generate the .config file:
+	eg: make ARCH=arm CROSS_COMPILE=path/to/comipler/arm-none-eabi- xxx_defconfig
 	then 
 	make ARCH=arm CROSS_COMPILE=path/to/comipler/arm-none-eabi- -j8
 	
@@ -28,3 +23,9 @@ cross compiling for kernel module
 5. cd into kernel module directory. make all
 
 
+
+------------------------- tips ---------------------------------
+ 1. "make kernelversion" to know the kernel version of source tree. or check top level makefile.
+ 2. "modinfo module_name" to know which kernel version a module is built against.
+ 3.
+ 

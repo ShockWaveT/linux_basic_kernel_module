@@ -3,11 +3,12 @@
 #include<linux/cdev.h>
 #include<linux/device.h>
 #include<linux/kdev_t.h>
+#include<linux/uaccess.h>
 
 #define DEV_MEM_SIZE 512
 
 /* psuedo device's memory */
-char device_buffer[DEV_MEM_SIZE];
+char device_buffer[DEV_MEM_SIZE] = "Hello World\n";
 
 /* will hold the device major and minor numbers*/
 dev_t device_number;
@@ -26,8 +27,21 @@ loff_t pcd_lseek(struct file *filp, loff_t off, int whence)
 
 ssize_t pcd_read(struct file *filp, char __user *buff, size_t count, loff_t *f_pos)
 {
+	int ret;
 	pr_info("pcd read called\n");
-	return 0;
+	
+	if(count > DEV_MEM_SIZE){
+		pr_info("too much data requested to pcd driver\n");
+		count = DEV_MEM_SIZE;
+	}
+	
+	ret = copy_to_user(buff, device_buffer, count);
+	if(ret != 0){
+		pr_info("pcd driver: could not read whole file\n");
+		return -EFAULT;
+	}
+	pr_info("pcd: copy_to_user ret: %d\n", ret);
+	return count;
 }
 
 ssize_t pcd_write(struct file *filp, const char __user *buff, size_t count, loff_t *f_pos)
@@ -87,7 +101,13 @@ static int __init pcd_driver_init(void)
 
 static void __exit pcd_driver_cleanup(void)
 {
+	/*Class destroy */
+	class_destroy(class_pcd);
 
+	/*Unregister device numbers for MAX_DEVICES */
+	unregister_chrdev_region(device_number, 1);
+	
+	pr_info("pcd platform driver unloaded\n");
 }
 
 module_init(pcd_driver_init);
