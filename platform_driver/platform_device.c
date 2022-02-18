@@ -22,12 +22,16 @@ struct pcdev_platform_data pcdev_platform_data[2] = {
 
 //creating two platform devices
 struct platform_device pcd_platform_dev1 = {
-	.name = "psuedo-char-device-1",
+
+	//This name should be exactly same as the driver name
+	.name = "pseudo-char-device",	
 	.id = 0
 };
 
 struct platform_device pcd_platform_dev2 = {
-	.name = "psuedo-char-device-2",
+
+	//This name should be exactly same as the driver name
+	.name = "pseudo-char-device",
 	.id = 1
 };
 
@@ -36,6 +40,10 @@ static int __init pcdev_platform_init(void)
 	//register platform device
 	platform_device_register(&pcd_platform_dev1);
 	platform_device_register(&pcd_platform_dev2);
+	pr_info("pcdev device setup module inserted\n");
+
+	//when the module is inserted new device directories will 
+	//appear in ""/sys/devices/platform"
 	
 	return 0;
 	
@@ -45,6 +53,8 @@ static void __exit pcdev_platform_exit(void)
 {
 	platform_device_unregister(&pcd_platform_dev1);
 	platform_device_unregister(&pcd_platform_dev2);
+	
+	pr_info("pcdev device setup module removed\n");
 }
 
 module_init(pcdev_platform_init);

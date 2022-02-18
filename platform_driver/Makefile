@@ -1,4 +1,4 @@
-obj-m := main.o
+obj-m := platform_device.o platform_driver.o
 ARCH=arm
 CROSS_COMPILE=/home/arunc/projects/arun/tool_chain/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux/gcc-arm-none-eabi-10.3-2021.10/bin/arm-none-eabi-
 KERN_DIR =/home/arunc/projects/arun/linux_source/beaglebone_4.19/linux-4.19
